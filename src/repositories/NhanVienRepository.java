@@ -27,6 +27,7 @@ public class NhanVienRepository {
         // Khởi tạo ArrayList<NhanVien>
         ArrayList<NhanVien> ds = new ArrayList<>();
         
+        
         // B3: Viết câu lệnh truy vấn SQL
         String query = "SELECT * FROM NhanVien";
         
