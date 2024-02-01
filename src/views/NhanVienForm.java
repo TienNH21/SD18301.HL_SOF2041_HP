@@ -15,6 +15,7 @@ public class NhanVienForm extends javax.swing.JFrame {
          * để ngay khi chạy chương trình sẽ hiển thị dữ liệu lên JTable
          */
         this.loadTable();
+        this.resetForm();
     }
     
     /**
@@ -32,7 +33,7 @@ public class NhanVienForm extends javax.swing.JFrame {
                 nv.getMaNV(),
                 nv.getHoTen(),
                 nv.getMatKhau(),
-                nv.getVaiTro(),
+                nv.getVaiTro() == 1 ? "Truong phong" : "Nhan vien",
             };
             
             dtm.addRow(rowData);
@@ -75,6 +76,11 @@ public class NhanVienForm extends javax.swing.JFrame {
         jLabel4.setText("Vai trò");
 
         btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnThemActionPerformed(evt);
+            }
+        });
 
         buttonGroup1.add(rdoNV);
         rdoNV.setText("Nhân viên");
@@ -83,10 +89,25 @@ public class NhanVienForm extends javax.swing.JFrame {
         rdoTP.setText("Trưởng phòng");
 
         btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
 
         btnXoa.setText("Xóa");
+        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnXoaActionPerformed(evt);
+            }
+        });
 
         btnLamMoi.setText("Làm mới");
+        btnLamMoi.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnLamMoiActionPerformed(evt);
+            }
+        });
 
         javax.swing.GroupLayout jPanel1Layout = new javax.swing.GroupLayout(jPanel1);
         jPanel1.setLayout(jPanel1Layout);
@@ -159,6 +180,11 @@ public class NhanVienForm extends javax.swing.JFrame {
                 "Mã NV", "Họ tên", "Mật khẩu", "Vai trò"
             }
         ));
+        tblNV.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblNVMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblNV);
 
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
@@ -202,6 +228,79 @@ public class NhanVienForm extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
+    private void tblNVMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblNVMouseClicked
+        int row = this.tblNV.getSelectedRow();
+        if (row == -1) {
+            return ;
+        }
+        
+        
+        // Đọc giá trị của dòng được chọn trên JTable
+        String maNV = this.tblNV.getValueAt(row, 0).toString();
+        String hoTen = this.tblNV.getValueAt(row, 1).toString();
+        String matKhau = this.tblNV.getValueAt(row, 2).toString();
+        String vaiTro = this.tblNV.getValueAt(row, 3).toString();
+        
+        // Đưa dữ liệu vừa đọc được từ JTable lên Form: JTextField, JRadioButton ...
+        this.txtMaNV.setText(maNV);
+        this.txtHoTen.setText(hoTen);
+        this.txtMatKhau.setText(matKhau);
+        
+        if (vaiTro.equals("Nhan vien")) {
+            this.rdoNV.setSelected(true);
+        } else {
+            this.rdoTP.setSelected(true);
+        }
+    }//GEN-LAST:event_tblNVMouseClicked
+
+    private void btnLamMoiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLamMoiActionPerformed
+        this.resetForm();
+    }//GEN-LAST:event_btnLamMoiActionPerformed
+
+    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+        // Xóa dòng được chọn trên JTable
+
+        // Lấy ra dòng được chọn trên JTable
+        int row = this.tblNV.getSelectedRow();
+        
+        // Nếu không có dòng nào được chọn
+        if (row == -1) {
+            return ;
+        }
+        
+        String maNV = this.tblNV.getValueAt(row, 0).toString();
+        this.nvRepo.delete(maNV);
+        this.loadTable();
+    }//GEN-LAST:event_btnXoaActionPerformed
+
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
+        String ma = this.txtMaNV.getText();
+        String hoTen = this.txtHoTen.getText();
+        String matKhau = this.txtMatKhau.getText();
+        int vaiTro = this.rdoNV.isSelected() ? 0 : 1;
+        
+        NhanVien nv = new NhanVien(ma, matKhau, hoTen, vaiTro);
+        this.nvRepo.create(nv);
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        String ma = this.txtMaNV.getText();
+        String hoTen = this.txtHoTen.getText();
+        String matKhau = this.txtMatKhau.getText();
+        int vaiTro = this.rdoNV.isSelected() ? 0 : 1;
+        
+        NhanVien nv = new NhanVien(ma, matKhau, hoTen, vaiTro);
+        this.nvRepo.update(nv);
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void resetForm()
+    {
+        this.txtMaNV.setText("");
+        this.txtHoTen.setText("");
+        this.txtMatKhau.setText("");
+        this.rdoNV.setSelected(true);
+    }
+    
     public static void main(String args[]) {
         /* Set the Nimbus look and feel */
         //<editor-fold defaultstate="collapsed" desc=" Look and feel setting code (optional) ">

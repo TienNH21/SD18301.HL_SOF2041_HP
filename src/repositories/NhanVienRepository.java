@@ -73,4 +73,68 @@ public class NhanVienRepository {
         
         return ds;
     }
+
+
+    public void delete(String maNV)
+    {
+        // B1: Viết truy vấn
+        String query = "DELETE FROM NhanVien WHERE MaNV = ?";
+        
+        try {
+            // B2: Tạo PreparedStatement
+            PreparedStatement ps = this.conn.prepareStatement(query);
+            /**
+             * Dấu "?" trong câu truy vấn được gọi là tham số của câu truy vấn.
+             * Do giá trị cần truyền vào cho tham số có kiểu dữ liệu là String
+             *      nên phương thức truyền giá trị sẽ là setString.
+             *      Nếu tham số có kiểu là int thì phương thức sẽ là setInt() ...
+             * Phương thức setString() có 2 tham số:
+             *      Tham số 1: vị trí của dấu "?" trong câu truy vấn
+             *      Tham số 2: giá trị cần truyền vào cho dấu "?"
+             * Câu truy vấn có bao nhiêu tham số (dấu "?") thì phải truyền đủ
+             *      giá trị cho bấy nhiêu tham số.
+             */
+            
+            // B3: Gán giá trị cho tham số trong câu truy vấn
+            ps.setString(1, maNV);
+            
+            // B4: Thực thi câu truy vấn
+            ps.execute();
+        } catch (Exception e) { e.printStackTrace(); }
+    }
+    
+    public void create(NhanVien nv)
+    {
+        String query = "INSERT INTO NhanVien(MaNV, HoTen, MatKhau, VaiTro) "
+            + " VALUES (?, ?, ?, ?)";
+        
+        try {
+            PreparedStatement ps = this.conn.prepareStatement(query);
+            ps.setString(1, nv.getMaNV());
+            ps.setString(2, nv.getHoTen());
+            ps.setString(3, nv.getMatKhau());
+            ps.setInt(4, nv.getVaiTro());
+            
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    public void update(NhanVien nv)
+    {
+        String query = "UPDATE NhanVien SET HoTen = ?, MatKhau = ?, VaiTro = ? "
+                + " WHERE MaNV = ?";
+        
+        try {
+            PreparedStatement ps = this.conn.prepareStatement(query);
+            ps.setString(1, nv.getHoTen());
+            ps.setString(2, nv.getMatKhau());
+            ps.setInt(3, nv.getVaiTro());
+            ps.setString(4, nv.getMaNV());
+            ps.execute();
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 }
